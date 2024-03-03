@@ -1,0 +1,34 @@
+( devices )
+|00 @System  [ &vector $2 &pad $6 &r $2 &g $2 &b $2 ]
+|20 @Screen  [ &vector $2 &width $2 &height $2 &auto $1 &pad $1 &x $2 &y $2 &addr $2 &pixel $1 &sprite $1 ]
+
+( macros )
+( draw a pixel foreground:4 color:1 )
+%DRAW-PIXEL { #41 .Screen/pixel DEO } ( -- )
+%INC-X { .Screen/x DEI2 #0001 ADD2 .Screen/x DEO2 } ( -- )
+( main )
+|0100
+  (
+    set system colors. Screen device can only show 4 colors at a given time.
+            rgb
+    color0: 202 => #220022 dark purple
+    color1: c1c => #cc11cc
+    color2: ece => #eeccee
+    color3: 905 => #990055
+  )
+  #2ce9 .System/r DEO2
+  #01c0 .System/g DEO2 
+  #2ce5 .System/g DEO2
+ 
+  ( drawing a pixel a 8, 8 )
+  #0008 .Screen/x DEO2
+  #0008 .Screen/y DEO2
+  DRAW-PIXEL
+  
+  ( drawing pixels at x + 1 )
+  INC-X DRAW-PIXEL
+  INC-X DRAW-PIXEL
+  INC-X DRAW-PIXEL
+  INC-X DRAW-PIXEL
+  INC-X DRAW-PIXEL
+  INC-X DRAW-PIXEL
