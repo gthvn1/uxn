@@ -5,7 +5,18 @@
 ( macros )
 ( draw a pixel foreground:4 color:1 )
 %DRAW-PIXEL { #41 .Screen/pixel DEO } ( -- )
-%INC-X { .Screen/x DEI2 #0001 ADD2 .Screen/x DEO2 } ( -- )
+%ADD-X { .Screen/x DEI2 ADD2 .Screen/x DEO2 } ( increment -- )
+%INC-X { #0001 ADD-X } ( -- )
+( draw a 6 pixels horizontal line starting from (x,y) )
+%DRAW-LINE {
+  DRAW-PIXEL INC-X
+  DRAW-PIXEL INC-X
+  DRAW-PIXEL INC-X
+  DRAW-PIXEL INC-X
+  DRAW-PIXEL INC-X
+  DRAW-PIXEL
+  } ( -- )
+
 ( main )
 |0100
   (
@@ -17,18 +28,10 @@
     color3: 905 => #990055
   )
   #2ce9 .System/r DEO2
-  #01c0 .System/g DEO2 
+  #01c0 .System/g DEO2
   #2ce5 .System/g DEO2
- 
-  ( drawing a pixel a 8, 8 )
+
+  ( drawing a line starting at (8, 8) )
   #0008 .Screen/x DEO2
   #0008 .Screen/y DEO2
-  DRAW-PIXEL
-  
-  ( drawing pixels at x + 1 )
-  INC-X DRAW-PIXEL
-  INC-X DRAW-PIXEL
-  INC-X DRAW-PIXEL
-  INC-X DRAW-PIXEL
-  INC-X DRAW-PIXEL
-  INC-X DRAW-PIXEL
+  DRAW-LINE
