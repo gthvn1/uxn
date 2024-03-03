@@ -3,10 +3,16 @@
 |20 @Screen  [ &vector $2 &width $2 &height $2 &auto $1 &pad $1 &x $2 &y $2 &addr $2 &pixel $1 &sprite $1 ]
 
 ( macros )
+%INIT-X { #0008 .Screen/x DEO2 } ( -- )
+%INIT-Y { #0008 .Screen/y DEO2 } ( -- )
 ( draw a pixel foreground:4 color:1 )
 %DRAW-PIXEL { #41 .Screen/pixel DEO } ( -- )
 %ADD-X { .Screen/x DEI2 ADD2 .Screen/x DEO2 } ( increment -- )
+%ADD-Y { .Screen/y DEI2 ADD2 .Screen/y DEO2 } ( increment -- )
+%8ADD-X { #0008 ADD-X }  ( -- )
+%8ADD-Y { #0008 ADD-Y }  ( -- )
 %INC-X { #0001 ADD-X } ( -- )
+%INC-Y { #0001 ADD-Y } ( -- )
 ( draw a 6 pixels horizontal line starting from (x,y) )
 %DRAW-LINE {
   DRAW-PIXEL INC-X
@@ -29,9 +35,55 @@
   )
   #2ce9 .System/r DEO2
   #01c0 .System/g DEO2
-  #2ce5 .System/g DEO2
+  #2ce5 .System/b DEO2
 
   ( drawing a line starting at (8, 8) )
-  #0008 .Screen/x DEO2
-  #0008 .Screen/y DEO2
+  INIT-X INIT-Y
   DRAW-LINE
+
+  ( 
+    1bpp sprite: 8 bytes for the sprite
+      11111111:  ff
+      10000001:  81
+      10000001:  81
+      10000001:  81
+      10000001:  81
+      10000001:  81
+      10000001:  81
+      11111111:  ff
+  )
+  ( send absolute @ (2 bytes long) of the sprite to screen device )
+  ;square .Screen/addr DEO2
+
+  ( draw sprite in the background )
+  ( using color1 for the outline )
+  8ADD-Y INC-Y INIT-X
+  #00 .Screen/sprite DEO 8ADD-X
+  #01 .Screen/sprite DEO 8ADD-X
+  #02 .Screen/sprite DEO 8ADD-X
+  #03 .Screen/sprite DEO
+
+  8ADD-Y INC-Y INIT-X
+  #04 .Screen/sprite DEO 8ADD-X
+  #05 .Screen/sprite DEO 8ADD-X
+  #06 .Screen/sprite DEO 8ADD-X
+  #07 .Screen/sprite DEO
+
+  8ADD-Y INC-Y INIT-X
+  #08 .Screen/sprite DEO 8ADD-X
+  #09 .Screen/sprite DEO 8ADD-X
+  #0a .Screen/sprite DEO 8ADD-X
+  #0b .Screen/sprite DEO
+
+  8ADD-Y INC-Y INIT-X
+  #0c .Screen/sprite DEO 8ADD-X
+  #0d .Screen/sprite DEO 8ADD-X
+  #0e .Screen/sprite DEO 8ADD-X
+  #0f .Screen/sprite DEO
+BRK
+
+( 
+  sprite is loaded from memory. So we need to label it. As it is not
+  part of the program we put it after the break
+)
+@square ff81 8181 8181 81ff
