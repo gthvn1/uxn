@@ -1,0 +1,17 @@
+( devices )
+|10 @Console [ &vector $2 &read $1 &pad $5 &write $1 &error $1 ]
+
+( macros: print a character to standard output )
+%EMIT { .Console/write DEO } ( character -- )
+%NL   { #0a EMIT } ( -- )
+%PRINT-DIGIT { #30 ADD EMIT } ( digit -- )
+
+( main )
+|0100
+  #01 PRINT-DIGIT NL
+  #02 PRINT-DIGIT NL
+  #03 PRINT-DIGIT NL
+  LIT "o ( push last char first )
+  LIT2 "ll
+  LIT2 "eh
+  EMIT EMIT EMIT EMIT EMIT NL
